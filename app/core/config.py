@@ -9,11 +9,13 @@ class RunConfig(BaseModel):
         app (str): Entrypoint to start fastapi app by uvicorn. "main:app" by default
         host (str): Host to start app on. "0.0.0.0" by default
         port (int): Port to start app on. 8000 by default
+        reload (bool): Auto reload app. True by default
     """
 
     app: str = "main:app"
     host: str = "0.0.0.0"
     port: int = 8000
+    reload: bool = True
 
 
 class ApiPrefix(BaseModel):
