@@ -12,6 +12,7 @@ uvicorn = "^0.32.1"
 pydantic-settings = "^2.6.1"
 sqlalchemy = {extras = ["asyncio"], version = "^2.0.36"}
 asyncpg = "^0.30.0"
+alembic = "^1.14.0"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -70,4 +71,4 @@ line-ending = "auto"
 select = ["E", "F", "I", "B"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["api", "core"]
+known-first-party = ["api", "core", "migration_utils"]
