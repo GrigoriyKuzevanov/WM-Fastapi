@@ -43,6 +43,7 @@ class PostgresDBConfig(BaseModel):
         echo_pool (bool): Logging connection pool information. "True" by default
         pool_size (int): The number of connections to keep open inside the connection
         pool. 40 by default
+
         max_overflow (int): The number of connections to allow in connection pool
         overflow. 10 by default
 
@@ -82,6 +83,29 @@ class PostgresDBConfig(BaseModel):
         )
 
 
+class AlembicConfig(BaseModel):
+    """A class for alembic settings.
+
+    Attributes:
+        script_location (str): Location for alembic script. "migration/utils/alembic" by
+        default
+
+        version_locations (str): Locatin for vesions files. "" by default
+        file_template (str): A template for vesion file's names
+        "%%(year)d_%%(month).2d_%%(day).2d_%%(hour).2d%%(minute).2d-%%(rev)s_%%(slug)s"
+        by default
+
+        timezone (str): Alembic timezone: "UTC" by default
+    """
+
+    script_location: str = "migration_utils/alembic"
+    version_locations: str = ""
+    file_template: str = (
+        "%%(year)d_%%(month).2d_%%(day).2d_%%(hour).2d%%(minute).2d-%%(rev)s_%%(slug)s"
+    )
+    timezone: str = "UTC"
+
+
 class Settings(BaseSettings):
     """A base class for app's settings. Settings values might be overriden by environmet
     variables.
@@ -89,9 +113,13 @@ class Settings(BaseSettings):
     Attributes:
         run (RunConfig): RunConfig class's instance with settings for running the main
         application
+
         api (ApiPrefix): ApiPrefix class's instance with settings for api prefix
         main_pg_db (PostgresDBConfig): PostgresDBConfig class's instance with settings
         for database
+
+        alembic (AlembicConfig): AlembicConfig class's instance with settings for
+        alembic
 
         model_config (SettingsConfigDict): SettingConfigDict instance with settings
         configuration
@@ -99,11 +127,13 @@ class Settings(BaseSettings):
 
     run: RunConfig = RunConfig()
     api: ApiPrefix = ApiPrefix()
+    alembic: AlembicConfig = AlembicConfig()
     main_pg_db: PostgresDBConfig
 
     model_config = SettingsConfigDict(
         case_sensitive=False,
-        env_file=(".env", "app/.env", ".env.template"),
+        # env_file=(".env", "app/.env", ".env.template"),
+        env_file=(".env.template", ".env", "app/.env"),
         env_nested_delimiter="__",
         env_prefix="CONFIG__",
     )
