@@ -1,6 +1,6 @@
 from pydantic import BaseModel, PostgresDsn, computed_field
 from pydantic_core import MultiHostUrl
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class RunConfig(BaseModel):
@@ -50,7 +50,7 @@ class PostgresDBConfig(BaseModel):
         postgres_url (PostgresDsn): Postgres url built from db settings.
     """
 
-    scheme: str = "postgresql+asycnpg"
+    scheme: str = "postgresql+asyncpg"
     db_user: str
     db_password: str
     db_host: str
@@ -84,11 +84,21 @@ class Settings(BaseSettings):
         api (ApiPrefix): ApiPrefix class's instance with settings for api prefix
         main_pg_db (PostgresDBConfig): PostgresDBConfig class's instance with settings
         for database
+
+        model_config (SettingsConfigDict): SettingConfigDict instance with settings
+        configuration
     """
 
     run: RunConfig = RunConfig()
     api: ApiPrefix = ApiPrefix()
     main_pg_db: PostgresDBConfig
+
+    model_config = SettingsConfigDict(
+        case_sensitive=False,
+        env_file=(".env", "app/.env", ".env.template"),
+        env_nested_delimiter="__",
+        env_prefix="CONFIG__",
+    )
 
 
 settings = Settings()
