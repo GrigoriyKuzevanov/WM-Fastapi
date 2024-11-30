@@ -19,14 +19,28 @@ class RunConfig(BaseModel):
     reload: bool = True
 
 
+class ApiV1Prefix(BaseModel):
+    """A class for api vesion 1 settings.
+
+    Attributes:
+        prefix (str): An api_v1's url prefix. "/v1" by default
+        trade_results (str): Trade results url prefix. "/trade-results" by default
+    """
+
+    prefix: str = "/v1"
+    trade_results: str = "/trade-results"
+
+
 class ApiPrefix(BaseModel):
     """A class for api prefix settings.
 
     Attributes:
         prefix (str): An api's url prefix. "/api" by default
+        v1: (ApiV1Prefix): An api_v1 prefix settings class
     """
 
     prefix: str = "/api"
+    v1: ApiV1Prefix = ApiV1Prefix()
 
 
 class PostgresDBConfig(BaseModel):
