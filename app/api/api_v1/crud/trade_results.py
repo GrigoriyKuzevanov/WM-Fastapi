@@ -1,3 +1,5 @@
+import datetime
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -26,7 +28,7 @@ async def read_all_trade_results(
 
 async def read_last_trading_dates(
     days: int, session: AsyncSession
-) -> list[trade_result_model]:
+) -> list[datetime.date]:
     """Fetch a list of the most recent distinct trade dates from the database.
 
     Args:
