@@ -35,7 +35,7 @@ async def get_trading_results(
 
 @router.get("/last-dates")
 async def get_last_trading_dates(
-    days: int = 1,
+    days: int = Query(1, gt=0, description="The number of days to get dates for"),
     session: AsyncSession = Depends(db_connector.get_session),
 ) -> list[str]:
     trade_dates = await read_last_trading_dates(days, session)
