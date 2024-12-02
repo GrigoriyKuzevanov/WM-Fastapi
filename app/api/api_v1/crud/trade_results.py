@@ -29,7 +29,7 @@ async def read_all_trade_results(
 async def read_last_trading_dates(
     days: int, session: AsyncSession
 ) -> list[datetime.date]:
-    """Fetch a list of the most recent distinct trade dates from the database.
+    """Fetches a list of the most recent distinct trade dates from the database.
 
     Args:
         days (int): The number of trade dates to fetch
@@ -48,7 +48,19 @@ async def read_last_trading_dates(
 
 async def read_dynamics(
     start_date: datetime.date, end_date: datetime.date, session: AsyncSession
-):
+) -> list[trade_result_model]:
+    """Fetches a list of trade results from the database within the specified date
+    range.
+
+    Args:
+        start_date (datetime.date): The start date of quering period
+        end_date (datetime.date): The end date of quering period
+        session (AsyncSession): The async database session's instance
+
+    Returns:
+        list[trade_result_model]: A list containing trade results model objects
+    """
+
     stmt = select(trade_result_model).filter(
         trade_result_model.date <= end_date, trade_result_model.date >= start_date
     )
