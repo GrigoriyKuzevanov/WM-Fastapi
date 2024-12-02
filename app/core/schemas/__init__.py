@@ -1,3 +1,3 @@
-__all__ = ("SpimexTradeResultBase",)
+__all__ = ("TradeResultOut",)
 
-from .trade_result import SpimexTradeResultBase
+from .trade_result import TradeResultOut

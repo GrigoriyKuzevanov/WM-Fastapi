@@ -8,6 +8,10 @@ class SpimexTradeResultBase(BaseModel):
     sqlalchemy model of trade results.
     """
 
+    model_config = {"from_attributes": True}
+
+
+class TradeResultOut(SpimexTradeResultBase):
     id: int
     exchange_product_id: str
     exchange_product_name: str
@@ -22,8 +26,3 @@ class SpimexTradeResultBase(BaseModel):
 
     created_on: datetime
     updated_on: datetime
-
-    class Config:
-        """Model configuration."""
-
-        from_attributes = True
