@@ -5,11 +5,17 @@ from pydantic import BaseModel, Field, field_validator
 
 
 class FilterParamsBase(BaseModel):
+    """A base scheme using pydantic model for query params using to filter database
+    query.
+    """
+
     limit: int = Field(10, ge=0, description="Limit to returning results")
     skip: int = Field(0, ge=0, description="Offset to skip in returning results")
 
 
 class TradingFilterParams(FilterParamsBase):
+    """A pydantic model for query params using to filter spimex trade results."""
+
     oil_id: str | None = Field(None, description="Oil id")
     delivery_type_id: str | None = Field(None, description="Id of delivery type")
     delivery_basis_id: str | None = Field(None, description="Id of delivery bases")
