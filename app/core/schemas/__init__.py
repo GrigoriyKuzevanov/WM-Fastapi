@@ -1,3 +1,3 @@
-__all__ = ("TradeResultOut",)
+__all__ = ("TradeResultOut", "TradeResultDate")
 
-from .trade_result import TradeResultOut
+from .trade_result import TradeResultDate, TradeResultOut
