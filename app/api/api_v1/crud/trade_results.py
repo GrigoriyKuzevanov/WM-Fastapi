@@ -22,3 +22,23 @@ async def read_all_trade_results(
     db_results = await session.scalars(stmt)
 
     return db_results.all()
+
+
+async def read_last_trading_dates(
+    days: int, session: AsyncSession
+) -> list[trade_result_model]:
+    """Fetch a list of the most recent distinct trade dates from the database.
+
+    Args:
+        days (int): The number of trade dates to fetch
+        session (AsyncSession): The async database session's instance
+
+    Returns:
+        list[trade_result_model]: A list containing last trade date fields
+    """
+
+    date_field = trade_result_model.date
+    stmt = select(date_field.distinct()).order_by(date_field.desc()).limit(days)
+    db_results = await session.scalars(stmt)
+
+    return db_results.all()
