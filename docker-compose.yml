@@ -19,6 +19,17 @@ services:
     volumes:
       - wm-fastapi-db:/var/lib/postgresql/data
 
+  redis-cache:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - 6380:6379
+    env_file:
+      - .env-compose
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_USER=${REDIS_USER}
+      - REDIS_USER_PASSWORD=${REDIS_USER_PASSWORD}
 
 volumes:
   wm-fastapi-db:
