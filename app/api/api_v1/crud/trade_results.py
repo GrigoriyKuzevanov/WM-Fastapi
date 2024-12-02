@@ -44,3 +44,14 @@ async def read_last_trading_dates(
     db_results = await session.scalars(stmt)
 
     return db_results.all()
+
+
+async def read_dynamics(
+    start_date: datetime.date, end_date: datetime.date, session: AsyncSession
+):
+    stmt = select(trade_result_model).filter(
+        trade_result_model.date <= end_date, trade_result_model.date >= start_date
+    )
+    db_results = await session.scalars(stmt)
+
+    return db_results.all()
