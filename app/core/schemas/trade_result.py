@@ -1,7 +1,18 @@
 import datetime
 from typing import Any
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, Field, field_validator
+
+
+class FilterParamsBase(BaseModel):
+    limit: int = Field(10, ge=0, description="Limit to returning results")
+    skip: int = Field(0, ge=0, description="Offset to skip in returning results")
+
+
+class TradingFilterParams(FilterParamsBase):
+    oil_id: str | None = Field(None, description="Oil id")
+    delivery_type_id: str | None = Field(None, description="Id of delivery type")
+    delivery_basis_id: str | None = Field(None, description="Id of delivery bases")
 
 
 class SpimexTradeResultBase(BaseModel):

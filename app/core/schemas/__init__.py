@@ -1,3 +1,3 @@
-__all__ = ("TradeResultOut",)
+__all__ = ("TradeResultOut", "TradingFilterParams")
 
-from .trade_result import TradeResultOut
+from .trade_result import TradeResultOut, TradingFilterParams
