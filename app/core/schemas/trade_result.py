@@ -21,6 +21,15 @@ class TradingFilterParams(FilterParamsBase):
     delivery_basis_id: str | None = Field(None, description="Id of delivery bases")
 
 
+class DynamicsFilterParams(TradingFilterParams):
+    """A pydantic model for query params using to get trade results for the period"""
+
+    start_date: datetime.date = Field(description="The start date for period")
+    end_date: datetime.date = Field(
+        datetime.date.today(), description="The end date for period"
+    )
+
+
 class SpimexTradeResultBase(BaseModel):
     """A base scheme using pydantic model representing trade results. Attributes matches
     sqlalchemy model of trade results.
