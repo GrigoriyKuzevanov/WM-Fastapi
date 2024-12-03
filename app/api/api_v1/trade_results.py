@@ -2,6 +2,7 @@ import datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query
+from fastapi_cache.decorator import cache
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.crud import (
@@ -11,12 +12,14 @@ from api.api_v1.crud import (
 )
 from core.config import settings
 from core.models import db_connector
+from core.redis import request_key_builder
 from core.schemas import DynamicsFilterParams, TradeResultOut, TradingFilterParams
 
 router = APIRouter(prefix=settings.api.v1.trade_results, tags=["Trade-results"])
 
 
 @router.get("/", response_model=list[TradeResultOut])
+@cache(expire=200, key_builder=request_key_builder)
 async def get_trading_results(
     filter_query: Annotated[TradingFilterParams, Query()],
     session: AsyncSession = Depends(db_connector.get_session),
@@ -34,16 +37,18 @@ async def get_trading_results(
 
 
 @router.get("/last-dates")
+@cache(expire=240, key_builder=request_key_builder)
 async def get_last_trading_dates(
     days: int = Query(1, gt=0, description="The number of days to get dates for"),
     session: AsyncSession = Depends(db_connector.get_session),
 ) -> list[datetime.date]:
     trade_dates = await read_last_trading_dates(days, session)
-
+    print("test")
     return trade_dates
 
 
 @router.get("/dynamics", response_model=list[TradeResultOut])
+@cache(expire=200, key_builder=request_key_builder)
 async def get_dynamics(
     filter_query: Annotated[DynamicsFilterParams, Query()],
     session: AsyncSession = Depends(db_connector.get_session),
