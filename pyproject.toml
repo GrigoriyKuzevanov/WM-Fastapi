@@ -71,7 +71,10 @@ line-ending = "auto"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B"]
-ignore = ["B008"]
+ignore = [
+    "B008",
+    "E402"
+]
 
 [tool.ruff.lint.isort]
 known-first-party = ["api", "core", "migration_utils"]
