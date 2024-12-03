@@ -1,4 +1,4 @@
-from pydantic import BaseModel, PostgresDsn, computed_field
+from pydantic import BaseModel, PostgresDsn, RedisDsn, computed_field
 from pydantic_core import MultiHostUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -97,6 +97,43 @@ class PostgresDBConfig(BaseModel):
         )
 
 
+class RedisConfig(BaseModel):
+    """A class for redis db connection settings.
+
+    Attributes:
+        scheme (str): Scheme for build redisdsn. "redis" by default
+        redis_password (str): Redis password
+        redis_user (str): Redis user's name to connect
+        redis_user_password (str): Redis user's password to connect
+        redis_host (str): Host to connect to redis
+        redis_port (int): Port to connect to redis
+        redis_db (str): Redis database's name to connect
+
+    Properties:
+        redis_url (RedisDsn): Redis url built from settings.
+    """
+
+    scheme: str = "redis"
+    redis_password: str
+    redis_user: str
+    redis_user_password: str
+    redis_host: str
+    redis_port: int
+    redis_db: str
+
+    @computed_field
+    @property
+    def redis_url(self) -> RedisDsn:
+        return MultiHostUrl.build(
+            scheme=self.scheme,
+            username=self.redis_user,
+            password=self.redis_user_password,
+            host=self.redis_host,
+            port=self.redis_port,
+            path=self.redis_db,
+        )
+
+
 class AlembicConfig(BaseModel):
     """A class for alembic settings.
 
@@ -135,6 +172,8 @@ class Settings(BaseSettings):
         alembic (AlembicConfig): AlembicConfig class's instance with settings for
         alembic
 
+        redis_cache (RedisConfig): RedisConfig clsss's instance with settings for redis
+
         model_config (SettingsConfigDict): SettingConfigDict instance with settings
         configuration
     """
@@ -143,6 +182,7 @@ class Settings(BaseSettings):
     api: ApiPrefix = ApiPrefix()
     alembic: AlembicConfig = AlembicConfig()
     main_pg_db: PostgresDBConfig
+    redis_cache: RedisConfig
 
     model_config = SettingsConfigDict(
         case_sensitive=False,
