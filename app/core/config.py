@@ -87,8 +87,8 @@ class PostgresDBConfig(BaseModel):
     db_name: str
     echo_sql: bool = True
     echo_pool: bool = True
-    pool_size: int = 40
-    max_overflow: int = 10
+    pool_size: int = 14
+    max_overflow: int = 11
     naming_convention: dict[str, str] = {
         "ix": "ix_%(column_0_label)s",
         "uq": "uq_%(table_name)s_%(column_0_name)s",
