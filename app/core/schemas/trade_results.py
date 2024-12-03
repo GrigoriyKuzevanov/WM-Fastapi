@@ -1,7 +1,6 @@
 import datetime
-from typing import Any
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 
 
 class FilterParamsBase(BaseModel):
@@ -53,30 +52,7 @@ class TradeResultOut(SpimexTradeResultBase):
     volume: int
     total: int
     count: int
-    date: str
+    date: datetime.date
 
-    created_on: str
-    updated_on: str
-
-    @field_validator("created_on", "updated_on", "date", mode="before")
-    @classmethod
-    def validate_datetime(cls, value: Any) -> str:
-        """Formats the "datetime" values to specific formate before pydantic main
-        validation:
-        "DD-MM-YYYY, HH:MM:SS" if it's a datetime.datetime value
-        "DD-MM-YYYY" if it's a datetime.date value
-        In others cases - return original value.
-
-        Args:
-            value (Any): The value to format
-
-        Returns:
-            str: String representation of the "datetime.datetime" object or the original
-            value
-        """
-
-        if isinstance(value, datetime.datetime):
-            return value.strftime("%d-%m-%Y, %H:%M:%S")
-        if isinstance(value, datetime.date):
-            return value.strftime("%d-%m-%Y")
-        return value
+    created_on: datetime.datetime
+    updated_on: datetime.datetime

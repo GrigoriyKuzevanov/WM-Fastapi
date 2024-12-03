@@ -1,3 +1,4 @@
+import datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query
@@ -36,12 +37,10 @@ async def get_trading_results(
 async def get_last_trading_dates(
     days: int = Query(1, gt=0, description="The number of days to get dates for"),
     session: AsyncSession = Depends(db_connector.get_session),
-) -> list[str]:
+) -> list[datetime.date]:
     trade_dates = await read_last_trading_dates(days, session)
 
-    response = [trade_date.strftime("%d-%m-%Y") for trade_date in trade_dates]
-
-    return response
+    return trade_dates
 
 
 @router.get("/dynamics", response_model=list[TradeResultOut])
