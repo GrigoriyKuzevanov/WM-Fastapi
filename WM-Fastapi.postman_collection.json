@@ -1,0 +1,158 @@
+{
+	"info": {
+		"_postman_id": "dc4850d8-5664-4c9b-828c-7afa50de5df8",
+		"name": "WM-Fastapi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37950764"
+	},
+	"item": [
+		{
+			"name": "Get Results",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/trade-results/?limit=10&skip=0&oil_id=A100&delivery_type_id=F&delivery_basis_id=NVY",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"trade-results",
+						""
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "10"
+						},
+						{
+							"key": "skip",
+							"value": "0"
+						},
+						{
+							"key": "oil_id",
+							"value": "A100"
+						},
+						{
+							"key": "delivery_type_id",
+							"value": "F"
+						},
+						{
+							"key": "delivery_basis_id",
+							"value": "NVY"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Last Trade Dates",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/trade-results/last-dates?days=21",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"trade-results",
+						"last-dates"
+					],
+					"query": [
+						{
+							"key": "days",
+							"value": "21"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Results for Period",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/trade-results/dynamics?start_date=2024-11-01&end_date=2024-11-10&oil_id=A100&delivery_type_id=F&delivery_basis_id=NVY&limit=10&skip=0",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"trade-results",
+						"dynamics"
+					],
+					"query": [
+						{
+							"key": "start_date",
+							"value": "2024-11-01"
+						},
+						{
+							"key": "end_date",
+							"value": "2024-11-10"
+						},
+						{
+							"key": "oil_id",
+							"value": "A100"
+						},
+						{
+							"key": "delivery_type_id",
+							"value": "F"
+						},
+						{
+							"key": "delivery_basis_id",
+							"value": "NVY"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						},
+						{
+							"key": "skip",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "URL",
+			"value": "http://localhost:8000/api/v1",
+			"type": "string"
+		}
+	]
+}
