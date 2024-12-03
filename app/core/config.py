@@ -43,6 +43,20 @@ class ApiPrefix(BaseModel):
     v1: ApiV1Prefix = ApiV1Prefix()
 
 
+class ClearCacheConfig(BaseModel):
+    """A class for clearing cache task time parameters.
+
+    Attributes:
+        hour (int): An hour for clearing cache. "14" by default
+        minute (int): A minute for clearing cache. "11" by default
+        timezone (str): Timezone for clearing cache. "UTC" by default
+    """
+
+    hour: int = 14
+    minute: int = 11
+    timezone: str = "UTC"
+
+
 class PostgresDBConfig(BaseModel):
     """A class for database connection settings.
 
@@ -167,6 +181,9 @@ class Settings(BaseSettings):
         alembic (AlembicConfig): AlembicConfig class's instance with settings for
         alembic
 
+        clear_cache (ClearCacheConfig): ClearCacheConfig class's instance with settings
+        for clearing cache task.
+
         redis_cache (RedisConfig): RedisConfig clsss's instance with settings for redis
 
         model_config (SettingsConfigDict): SettingConfigDict instance with settings
@@ -176,6 +193,7 @@ class Settings(BaseSettings):
     run: RunConfig = RunConfig()
     api: ApiPrefix = ApiPrefix()
     alembic: AlembicConfig = AlembicConfig()
+    clear_cache: ClearCacheConfig = ClearCacheConfig()
     main_pg_db: PostgresDBConfig
     redis_cache: RedisConfig
 
