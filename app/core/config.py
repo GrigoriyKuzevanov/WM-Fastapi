@@ -114,9 +114,6 @@ class RedisConfig(BaseModel):
     """
 
     scheme: str = "redis"
-    redis_password: str
-    redis_user: str
-    redis_user_password: str
     redis_host: str
     redis_port: int
     redis_db: str
@@ -126,8 +123,6 @@ class RedisConfig(BaseModel):
     def redis_url(self) -> RedisDsn:
         return MultiHostUrl.build(
             scheme=self.scheme,
-            username=self.redis_user,
-            password=self.redis_user_password,
             host=self.redis_host,
             port=self.redis_port,
             path=self.redis_db,
