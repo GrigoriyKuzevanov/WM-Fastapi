@@ -111,6 +111,52 @@ class PostgresDBConfig(BaseModel):
         )
 
 
+class PostgresTestDBConfig(BaseModel):
+    """A class for testing database connection settings.
+
+    Attributes:
+        scheme (str): Scheme for build postgresdsn. "postgresql+asycnpg" by default
+        db_user (str): Database user's name to connect
+        db_password (str): Database user's password to connect
+        db_host (str): Host to connect to database
+        db_port (int): Port to connect to database
+        db_name (str): Database's name to connect
+        echo_sql (bool): Logging sql statesments. "False" by default
+        echo_pool (bool): Logging connection pool information. "False" by default
+        pool_size (int): The number of connections to keep open inside the connection
+        pool. 5 by default
+
+        max_overflow (int): The number of connections to allow in connection pool
+        overflow. 10 by default
+
+    Properties:
+        postgres_url (PostgresDsn): Postgres url built from db settings.
+    """
+
+    scheme: str = "postgresql+asyncpg"
+    db_user: str
+    db_password: str
+    db_host: str
+    db_port: int
+    db_name: str
+    echo_sql: bool = False
+    echo_pool: bool = False
+    pool_size: int = 5
+    max_overflow: int = 10
+
+    @computed_field
+    @property
+    def postgres_url(self) -> PostgresDsn:
+        return MultiHostUrl.build(
+            scheme=self.scheme,
+            username=self.db_user,
+            password=self.db_password,
+            host=self.db_host,
+            port=self.db_port,
+            path=self.db_name,
+        )
+
+
 class RedisConfig(BaseModel):
     """A class for redis db connection settings.
 
@@ -178,6 +224,9 @@ class Settings(BaseSettings):
         main_pg_db (PostgresDBConfig): PostgresDBConfig class's instance with settings
         for database
 
+        test_pg_db (PostgresTestDBConfig): PostgresTestDBConfig class's instance with
+        settings for testing database
+
         alembic (AlembicConfig): AlembicConfig class's instance with settings for
         alembic
 
@@ -195,6 +244,7 @@ class Settings(BaseSettings):
     alembic: AlembicConfig = AlembicConfig()
     clear_cache: ClearCacheConfig = ClearCacheConfig()
     main_pg_db: PostgresDBConfig
+    test_pg_db: PostgresTestDBConfig
     redis_cache: RedisConfig
 
     model_config = SettingsConfigDict(
