@@ -81,4 +81,4 @@ ignore = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["api", "core", "migration_utils"]
+known-first-party = ["api", "core", "migration_utils", "main"]
