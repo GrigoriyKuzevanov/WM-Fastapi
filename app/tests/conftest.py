@@ -7,7 +7,7 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import settings
-from core.models import Base
+from core.models import Base, db_connector
 from core.models.db_connector import DataBaseConnector
 from main import app
 
@@ -20,11 +20,9 @@ test_db_connector = DataBaseConnector(
 )
 
 
-@pytest_asyncio.fixture(scope="session")
+@pytest_asyncio.fixture(scope="function")
 async def start_db() -> None:
-    """Inits and tears down the database by recreating tables for testing. Runs once per
-    testing session.
-    """
+    """Inits and tears down the database by recreating tables for testing."""
 
     async with test_db_connector.engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
@@ -34,33 +32,37 @@ async def start_db() -> None:
 
 
 @pytest_asyncio.fixture(scope="function")
-async def session() -> AsyncGenerator[AsyncSession, None]:
-    """Provides a fresh database session for each test function. Runs once per test."""
+async def test_session() -> AsyncGenerator[AsyncSession, None]:
+    """Provides a fresh database session for each test function."""
 
-    yield test_db_connector.get_session()
-
-
-@pytest_asyncio.fixture(scope="session")
-async def cache() -> None:
-    """Inits the in-memory cache for the test session. Runs once per session."""
-
-    FastAPICache.init(InMemoryBackend())
+    async with test_db_connector.session_factory() as testing_session:
+        yield testing_session
 
 
-@pytest_asyncio.fixture(scope="session")
+@pytest_asyncio.fixture(scope="function")
+async def cache():
+    """Inits in-memory cache and clear it for testing."""
+
+    namespace = "test_cache"
+    FastAPICache.init(InMemoryBackend(), prefix=namespace)
+
+    yield
+
+    backend = FastAPICache.get_backend()
+    await backend.clear(namespace=namespace)
+
+
+@pytest_asyncio.fixture(scope="function")
 async def client(start_db, cache) -> AsyncGenerator[AsyncClient, None]:
     """Provides async client for testing, overrides session to use testing database,
-    inits in-memory cache for tests. Runs once per session.
+    inits and clear in-memory cache for tests.
 
     Args:
         start_db: Fixture to recreate testing database
-        cache: Fixture to init in-memory cache
+        cache: Fixture to init and clear testing in-memory cache
     """
 
-    async def override_session():
-        yield test_db_connector.get_session()
-
-    app.dependency_overrides[session] = override_session
+    app.dependency_overrides[db_connector.get_session] = test_db_connector.get_session
 
     async with AsyncClient(
         transport=ASGITransport(app=app),
