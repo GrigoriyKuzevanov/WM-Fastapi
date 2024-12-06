@@ -15,7 +15,7 @@ async def test_without_params(
     """Tests the '/last-dates' endpoint without query params.
 
     Args:
-        client (AsyncClient): Test client to make requests.
+        client (AsyncClient): Test client to make requests
         five_test_dates_results (list[SpimexTradeResult]): A list of test trade results
         model objects
     """
@@ -38,7 +38,7 @@ async def test_with_days_params(
 
     Args:
         days (int): "days" query parameter value
-        client (AsyncClient): Test client to make requests.
+        client (AsyncClient): Test client to make requests
         five_test_dates_results (list[SpimexTradeResult]):  A list of test trade results
         model objects
     """
@@ -57,8 +57,8 @@ async def test_with_days_params(
 async def test_cache(client: AsyncClient) -> None:
     """Tests cache for the '/last_dates' endpoint.
 
-    Sends two requests to endpoint and checks cache headers in the responses. The second
-    request gets data from cache.
+    Sends tree requests to endpoint and checks cache headers in the responses.
+    The second request gets data from cache.
 
     Args:
         client (AsyncClient): Test client to make requests to the app
@@ -72,3 +72,8 @@ async def test_cache(client: AsyncClient) -> None:
 
     assert response_miss.headers.get("x-fastapi-cache") == "MISS"
     assert response_hit.headers.get("x-fastapi-cache") == "HIT"
+
+    response_param_miss = await client.get(URL, params={"days": 1})
+    assert response_param_miss.status_code == 200
+
+    assert response_param_miss.headers.get("x-fastapi-cache") == "MISS"
