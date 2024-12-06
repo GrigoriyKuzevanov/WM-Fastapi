@@ -40,7 +40,7 @@ async def test_session() -> AsyncGenerator[AsyncSession, None]:
 
 
 @pytest_asyncio.fixture(scope="function")
-async def cache():
+async def cache() -> AsyncGenerator[None, None]:
     """Inits in-memory cache and clear it for testing."""
 
     namespace = "test_cache"
