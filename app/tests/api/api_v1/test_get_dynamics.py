@@ -48,3 +48,48 @@ async def test_without_optional_params(
         assert trade_result.date == result_model.date
         assert trade_result.created_on == result_model.created_on
         assert trade_result.updated_on == result_model.updated_on
+
+
+@pytest.mark.parametrize("trade_result_num", [i for i in range(1, 6)])
+async def test_with_optional_params(
+    client: AsyncClient,
+    five_test_results: list[SpimexTradeResult],
+    trade_result_num: int,
+) -> None:
+    """Tests the '/dynamics' endpoint with "DynamicsFilterParams" query parameters.
+
+    Args:
+        client (AsyncClient): Test client to make requests
+        five_test_results (list[SpimexTradeResult]): A list of test trade results
+        model objects
+        trade_result_num (int): Integer to take test trade result model
+    """
+
+    result_model = five_test_results[-trade_result_num]
+
+    params = DynamicsFilterParams(
+        start_date=result_model.date,
+        oil_id=result_model.oil_id,
+        delivery_type_id=result_model.delivery_type_id,
+        delivery_basis_id=result_model.delivery_basis_id,
+    )
+
+    response = await client.get(URL, params=params.model_dump())
+    assert response.status_code == 200
+
+    response_json = response.json()
+    assert len(response_json) == 1
+
+    trade_result = TradeResultOut(**response_json[0])
+    assert trade_result.id == result_model.id
+    assert trade_result.exchange_product_id == result_model.exchange_product_id
+    assert trade_result.exchange_product_name == result_model.exchange_product_name
+    assert trade_result.delivery_basis_id == result_model.delivery_basis_id
+    assert trade_result.delivery_basis_name == result_model.delivery_basis_name
+    assert trade_result.delivery_type_id == result_model.delivery_type_id
+    assert trade_result.volume == result_model.volume
+    assert trade_result.total == result_model.total
+    assert trade_result.count == result_model.count
+    assert trade_result.date == result_model.date
+    assert trade_result.created_on == result_model.created_on
+    assert trade_result.updated_on == result_model.updated_on
