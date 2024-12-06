@@ -1,3 +1,5 @@
+from datetime import date
+
 import pytest
 from httpx import AsyncClient
 
@@ -93,3 +95,32 @@ async def test_with_optional_params(
     assert trade_result.date == result_model.date
     assert trade_result.created_on == result_model.created_on
     assert trade_result.updated_on == result_model.updated_on
+
+
+async def test_cache(client: AsyncClient) -> None:
+    """Tests cache for the '/dynamics' endpoint.
+
+    Sends tree requests to endpoint and checks cache headers in the responses.
+    The second request gets data from cache.
+
+    Args:
+        client (AsyncClient): Test client to make requests to the app
+    """
+    params = {
+        "start_date": str(date.today()),
+    }
+
+    response_miss = await client.get(URL, params=params)
+    assert response_miss.status_code == 200
+
+    response_hit = await client.get(URL, params=params)
+    assert response_hit.status_code == 200
+
+    assert response_miss.headers.get("x-fastapi-cache") == "MISS"
+    assert response_hit.headers.get("x-fastapi-cache") == "HIT"
+
+    params["start_date"] = str(date(year=2000, month=1, day=1))
+    response_param_miss = await client.get(URL, params=params)
+    assert response_param_miss.status_code == 200
+
+    assert response_param_miss.headers.get("x-fastapi-cache") == "MISS"
