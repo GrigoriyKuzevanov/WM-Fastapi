@@ -3,13 +3,14 @@ from httpx import AsyncClient
 
 from core.models import SpimexTradeResult
 
-from .fixtures import five_test_dates_results
+from .fixtures import five_test_results
 
-pytestmark = pytest.mark.asyncio(loop_scope="module")
+pytestmark = pytest.mark.asyncio(loop_scope="package")
+URL = "/last-dates"
 
 
 async def test_without_params(
-    client: AsyncClient, five_test_dates_results: list[SpimexTradeResult]
+    client: AsyncClient, five_test_results: list[SpimexTradeResult]
 ) -> None:
     """Tests the '/last-dates' endpoint without query params.
 
@@ -19,19 +20,19 @@ async def test_without_params(
         model objects
     """
 
-    response = await client.get("/last-dates")
+    response = await client.get(URL)
 
     assert response.status_code == 200
 
     response_json = response.json()
     assert len(response_json) == 1
 
-    assert response_json[0] == str(five_test_dates_results[0].date)
+    assert response_json[0] == str(five_test_results[0].date)
 
 
 @pytest.mark.parametrize("days", [i for i in range(1, 6)])
 async def test_with_days_params(
-    days: int, client: AsyncClient, five_test_dates_results: list[SpimexTradeResult]
+    days: int, client: AsyncClient, five_test_results: list[SpimexTradeResult]
 ) -> None:
     """Tests the '/last-dates' endpoint with "days" query parameter.
 
@@ -42,7 +43,7 @@ async def test_with_days_params(
         model objects
     """
 
-    response = await client.get("/last-dates", params={"days": days})
+    response = await client.get(URL, params={"days": days})
 
     assert response.status_code == 200
 
@@ -50,7 +51,7 @@ async def test_with_days_params(
 
     assert len(response_json) == days
     for i, resp_date in enumerate(response_json):
-        assert resp_date == str(five_test_dates_results[i].date)
+        assert resp_date == str(five_test_results[i].date)
 
 
 async def test_cache(client: AsyncClient) -> None:
@@ -63,10 +64,10 @@ async def test_cache(client: AsyncClient) -> None:
         client (AsyncClient): Test client to make requests to the app
     """
 
-    response_miss = await client.get("/last-dates")
+    response_miss = await client.get(URL)
     assert response_miss.status_code == 200
 
-    response_hit = await client.get("/last-dates")
+    response_hit = await client.get(URL)
     assert response_hit.status_code == 200
 
     assert response_miss.headers.get("x-fastapi-cache") == "MISS"

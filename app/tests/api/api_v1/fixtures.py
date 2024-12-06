@@ -7,7 +7,7 @@ from core.models import SpimexTradeResult
 
 
 @pytest_asyncio.fixture(scope="function")
-async def five_test_dates_results(
+async def five_test_results(
     test_session: AsyncSession,
 ) -> list[SpimexTradeResult]:
     """Creates and adds to testing database five test "SpimexTradeResult" model
@@ -30,15 +30,15 @@ async def five_test_dates_results(
         td = timedelta(days=i)
         data_to_save = {
             "id": i,
-            "exchange_product_id": "exchange_product_id",
-            "exchange_product_name": "exchange_product_name",
-            "oil_id": "oil_id",
-            "delivery_basis_id": "delivery_basis_id",
-            "delivery_basis_name": "delivery_basis_name",
-            "delivery_type_id": "delivery_type_id",
-            "volume": i,
-            "total": i,
-            "count": i,
+            "exchange_product_id": f"exchange_product_id_test {i}",
+            "exchange_product_name": f"exchange_product_name_test {i}",
+            "oil_id": f"oil_id_test {i}",
+            "delivery_basis_id": f"delivery_basis_id_test {i}",
+            "delivery_basis_name": f"delivery_basis_name_test {i}",
+            "delivery_type_id": f"delivery_type_id_test {i}",
+            "volume": 100 * i,
+            "total": 101 * i,
+            "count": 102 * i,
             "date": current_date - td,
         }
         trade_results_data.append(data_to_save)
