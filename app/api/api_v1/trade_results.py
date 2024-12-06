@@ -45,7 +45,7 @@ async def get_last_trading_dates(
     session: AsyncSession = Depends(db_connector.get_session),
 ) -> list[datetime.date]:
     trade_dates = await read_last_trading_dates(days, session)
-    print("test")
+
     return trade_dates
 
 
