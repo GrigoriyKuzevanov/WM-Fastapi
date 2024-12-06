@@ -32,7 +32,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         AsyncGenerator[None, None]: AsyncGenerator using by FastAPI
     """
 
-    redis = await get_redis_cache()
+    redis = get_redis_cache()
     FastAPICache.init(RedisBackend(redis), prefix="main-cache")
 
     scheduler.add_job(
