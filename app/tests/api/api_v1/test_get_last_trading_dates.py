@@ -1,0 +1,73 @@
+import pytest
+from httpx import AsyncClient
+
+from core.models import SpimexTradeResult
+
+from .fixtures import five_test_dates_results
+
+pytestmark = pytest.mark.asyncio(loop_scope="module")
+
+
+async def test_without_params(
+    client: AsyncClient, five_test_dates_results: list[SpimexTradeResult]
+) -> None:
+    """Tests the '/last-dates' endpoint without query params.
+
+    Args:
+        client (AsyncClient): Test client to make requests.
+        five_test_dates_results (list[SpimexTradeResult]): A list of test trade results
+        model objects
+    """
+
+    response = await client.get("/last-dates")
+
+    assert response.status_code == 200
+
+    response_json = response.json()
+    assert len(response_json) == 1
+
+    assert response_json[0] == str(five_test_dates_results[0].date)
+
+
+@pytest.mark.parametrize("days", [i for i in range(1, 6)])
+async def test_with_days_params(
+    days: int, client: AsyncClient, five_test_dates_results: list[SpimexTradeResult]
+) -> None:
+    """Tests the '/last-dates' endpoint with "days" query parameter.
+
+    Args:
+        days (int): "days" query parameter value
+        client (AsyncClient): Test client to make requests.
+        five_test_dates_results (list[SpimexTradeResult]):  A list of test trade results
+        model objects
+    """
+
+    response = await client.get("/last-dates", params={"days": days})
+
+    assert response.status_code == 200
+
+    response_json = response.json()
+
+    assert len(response_json) == days
+    for i, resp_date in enumerate(response_json):
+        assert resp_date == str(five_test_dates_results[i].date)
+
+
+async def test_cache(client: AsyncClient) -> None:
+    """Tests cache for the '/last_dates' endpoint.
+
+    Sends two requests to endpoint and checks cache headers in the responses. The second
+    request gets data from cache.
+
+    Args:
+        client (AsyncClient): Test client to make requests to the app
+    """
+
+    response_miss = await client.get("/last-dates")
+    assert response_miss.status_code == 200
+
+    response_hit = await client.get("/last-dates")
+    assert response_hit.status_code == 200
+
+    assert response_miss.headers.get("x-fastapi-cache") == "MISS"
+    assert response_hit.headers.get("x-fastapi-cache") == "HIT"
