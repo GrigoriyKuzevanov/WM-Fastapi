@@ -9,3 +9,13 @@ docker compose --env-file .env-compose.template up -d
 ```
 uvicorn app.main:app --reload
 ```
+
+- run tests
+```
+pytest
+```
+
+- run tests with coverage
+```
+pytest --cov
+```
