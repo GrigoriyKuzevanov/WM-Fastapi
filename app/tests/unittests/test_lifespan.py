@@ -17,7 +17,7 @@ async def test_lifespan():
     mock_db_connector = AsyncMock()
 
     with (
-        patch("core.lifespan.get_redis_cache", return_value=mock_redis),
+        patch("core.lifespan.redis_client.get_client", return_value=mock_redis),
         patch("core.lifespan.RedisBackend", return_value=mock_redis_backend),
         patch("core.lifespan.FastAPICache.init", mock_fastapi_cache.init),
         patch("core.lifespan.scheduler", mock_scheduler),
