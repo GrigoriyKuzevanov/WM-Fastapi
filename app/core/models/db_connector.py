@@ -56,7 +56,7 @@ class DataBaseConnector:
         """Provides an async database session.
 
         Yields:
-            AsyncSession: |An active async database session
+            AsyncSession: An active async database session
         """
 
         async with self.session_factory() as session:
