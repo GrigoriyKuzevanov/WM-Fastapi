@@ -7,7 +7,7 @@ class RedisClient:
     """A class to manage connection to Redis database."""
 
     def __init__(self, url: str) -> None:
-        """Inits Redis clients from given url to conntction.
+        """Inits Redis client from given.
 
         Args:
             url (str): URL to connect to redis
