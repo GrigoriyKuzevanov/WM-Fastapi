@@ -7,16 +7,16 @@ class RunConfig(BaseModel):
     """A class for app running settings.
 
     Attributes:
-        app (str): Entrypoint to start fastapi app by uvicorn. "main:app" by default
-        host (str): Host to start app on. "0.0.0.0" by default
-        port (int): Port to start app on. 8000 by default
-        reload (bool): Auto reload app. True by default
+        app (str): Entrypoint to start fastapi app by uvicorn
+        host (str): Host to start app on
+        port (int): Port to start app on
+        auto_reload (bool): Auto reload app
     """
 
-    app: str = "main:app"
-    host: str = "0.0.0.0"
-    port: int = 8000
-    reload: bool = True
+    app: str
+    host: str
+    port: int
+    auto_reload: bool
 
 
 class ApiV1Prefix(BaseModel):
@@ -251,7 +251,7 @@ class Settings(BaseSettings):
         cache (CacheConfig): CacheConfig class's instance with settings for cache
     """
 
-    run: RunConfig = RunConfig()
+    run: RunConfig
     api: ApiPrefix = ApiPrefix()
     alembic: AlembicConfig = AlembicConfig()
     clear_cache: ClearCacheConfig = ClearCacheConfig()
