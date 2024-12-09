@@ -9,7 +9,7 @@ from fastapi_cache.backends.redis import RedisBackend
 
 from core.config import settings
 from core.models import db_connector
-from core.redis import clear_cache_task, get_redis_cache
+from core.redis import clear_cache_task, redis_client
 
 scheduler = AsyncIOScheduler()
 
@@ -32,7 +32,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         AsyncGenerator[None, None]: AsyncGenerator using by FastAPI
     """
 
-    redis = get_redis_cache()
+    redis = redis_client.get_client()
     FastAPICache.init(RedisBackend(redis), prefix="main-cache")
 
     scheduler.add_job(
