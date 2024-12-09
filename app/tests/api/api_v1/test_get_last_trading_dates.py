@@ -1,4 +1,5 @@
 import pytest
+from fastapi import status
 from httpx import AsyncClient
 
 from core.models import SpimexTradeResult
@@ -22,7 +23,7 @@ async def test_without_params(
 
     response = await client.get(URL)
 
-    assert response.status_code == 200
+    assert response.status_code == status.HTTP_200_OK
 
     response_json = response.json()
     assert len(response_json) == 1
@@ -45,7 +46,7 @@ async def test_with_days_params(
 
     response = await client.get(URL, params={"days": days})
 
-    assert response.status_code == 200
+    assert response.status_code == status.HTTP_200_OK
 
     response_json = response.json()
 
@@ -65,15 +66,15 @@ async def test_cache(client: AsyncClient) -> None:
     """
 
     response_miss = await client.get(URL)
-    assert response_miss.status_code == 200
+    assert response_miss.status_code == status.HTTP_200_OK
 
     response_hit = await client.get(URL)
-    assert response_hit.status_code == 200
+    assert response_hit.status_code == status.HTTP_200_OK
 
     assert response_miss.headers.get("x-fastapi-cache") == "MISS"
     assert response_hit.headers.get("x-fastapi-cache") == "HIT"
 
     response_param_miss = await client.get(URL, params={"days": 1})
-    assert response_param_miss.status_code == 200
+    assert response_param_miss.status_code == status.HTTP_200_OK
 
     assert response_param_miss.headers.get("x-fastapi-cache") == "MISS"
