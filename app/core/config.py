@@ -57,6 +57,16 @@ class ClearCacheConfig(BaseModel):
     timezone: str = "UTC"
 
 
+class CacheConfig(BaseModel):
+    """A class for cache configuration parameters.
+
+    Attributes:
+        expiration (int): Cache expiration in seconds
+    """
+
+    expiration: int = 60 * 60 * 24
+
+
 class PostgresDBConfig(BaseModel):
     """A class for database connection settings.
 
@@ -237,6 +247,8 @@ class Settings(BaseSettings):
 
         model_config (SettingsConfigDict): SettingConfigDict instance with settings
         configuration
+
+        cache (CacheConfig): CacheConfig class's instance with settings for cache
     """
 
     run: RunConfig = RunConfig()
@@ -246,6 +258,7 @@ class Settings(BaseSettings):
     main_pg_db: PostgresDBConfig
     test_pg_db: PostgresTestDBConfig
     redis_cache: RedisConfig
+    cache: CacheConfig = CacheConfig()
 
     model_config = SettingsConfigDict(
         case_sensitive=False,

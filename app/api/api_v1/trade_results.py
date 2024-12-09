@@ -17,11 +17,9 @@ from core.schemas import DynamicsFilterParams, TradeResultOut, TradingFilterPara
 
 router = APIRouter(prefix=settings.api.v1.trade_results, tags=["Trade-results"])
 
-cache_expiration = 60 * 60 * 24
-
 
 @router.get("/", response_model=list[TradeResultOut])
-@cache(expire=cache_expiration, key_builder=request_key_builder)
+@cache(expire=settings.cache.expiration, key_builder=request_key_builder)
 async def get_trading_results(
     filter_query: Annotated[TradingFilterParams, Query()],
     session: AsyncSession = Depends(db_connector.get_session),
@@ -39,7 +37,7 @@ async def get_trading_results(
 
 
 @router.get("/last-dates")
-@cache(expire=cache_expiration, key_builder=request_key_builder)
+@cache(expire=settings.cache.expiration, key_builder=request_key_builder)
 async def get_last_trading_dates(
     days: int = Query(1, gt=0, description="The number of days to get dates for"),
     session: AsyncSession = Depends(db_connector.get_session),
@@ -50,7 +48,7 @@ async def get_last_trading_dates(
 
 
 @router.get("/dynamics", response_model=list[TradeResultOut])
-@cache(expire=cache_expiration, key_builder=request_key_builder)
+@cache(expire=settings.cache.expiration, key_builder=request_key_builder)
 async def get_dynamics(
     filter_query: Annotated[DynamicsFilterParams, Query()],
     session: AsyncSession = Depends(db_connector.get_session),
