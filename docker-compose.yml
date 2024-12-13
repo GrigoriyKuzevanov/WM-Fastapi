@@ -1,0 +1,40 @@
+services:
+  main-db:
+    image: postgres:14
+    restart: always
+    ports:
+      - 5431:5432
+    env_file:
+      - .env-compose
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready --username ${DB_USER} -d ${DB_NAME}"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - wm-fastapi-db:/var/lib/postgresql/data
+  
+  test-db:
+    image: postgres:14
+    restart: always
+    ports:
+      - 5430:5432
+    environment:
+      - POSTGRES_USER=${TEST_DB_USER}
+      - POSTGRES_PASSWORD=${TEST_DB_PASSWORD}
+      - POSTGRES_DB=${TEST_DB_NAME}
+
+  redis-cache:
+    image: redis:alpine
+    restart: always
+    ports:
+      - 6380:6379
+    
+
+volumes:
+  wm-fastapi-db:
